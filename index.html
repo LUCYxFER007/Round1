@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Red Protocol</title>
+    <style>
+        :root {
+            --bg-color: #1a0505;
+            --panel-bg: #2a0a0a;
+            --text-main: #eee;
+            --box-bg: #d32f2f;
+            --box-hover-bg: #f44336;
+            --box-revealed-bg: #b71c1c;
+            --grid-gap: 8px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        h1 {
+            color: #ff5252;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: var(--grid-gap);
+            width: 100%;
+            max-width: 800px;
+            background: var(--panel-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            margin-bottom: 2rem;
+        }
+
+        .grid-box {
+            background-color: var(--box-bg);
+            aspect-ratio: 1;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 5px;
+            user-select: none;
+            transition: all 0.2s ease;
+            box-shadow: inset 2px 2px 5px rgba(255,255,255,0.2), inset -2px -2px 5px rgba(0,0,0,0.4);
+            color: transparent;
+        }
+
+        .grid-box:hover {
+            background-color: var(--box-hover-bg);
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .grid-box.revealed {
+            background-color: var(--box-revealed-bg);
+            box-shadow: inset 1px 1px 4px rgba(0,0,0,0.9);
+            cursor: default;
+            color: #ff9999;
+            transform: none;
+        }
+        
+        .grid-box.winner.revealed {
+            color: #fff;
+            background-color: #4cd137; /* Winning green */
+            box-shadow: 0 0 15px #4cd137;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            font-size: 1.2rem;
+        }
+
+        footer {
+            margin-top: auto;
+            width: 100%;
+            max-width: 800px;
+            background: rgba(0,0,0,0.5);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #ff5252;
+            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.1);
+        }
+
+        .riddle-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .riddle {
+            background: rgba(255, 82, 82, 0.1);
+            padding: 1rem;
+            border-left: 4px solid #ff5252;
+            border-radius: 0 4px 4px 0;
+            transition: background 0.3s;
+        }
+
+        .riddle:hover {
+            background: rgba(255, 82, 82, 0.2);
+        }
+
+        .riddle h3 {
+            margin-top: 0;
+            color: #ff5252;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .riddle p {
+            margin: 0;
+            color: #ddd;
+            font-style: italic;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h1>The Red Protocol</h1>
+
+    <!-- 46 blocks generated here -->
+    <div id="grid" class="grid-container"></div>
+    
+    <footer>
+        <h2 style="color: #ff5252; margin-top: 0; margin-bottom: 1.5rem; text-align: center; font-size: 1.3rem; letter-spacing: 1px;">Initiation Riddles</h2>
+        <div class="riddle-section">
+            <div class="riddle">
+                <h3>Riddle I</h3>
+                <p>"I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?"</p>
+            </div>
+            <div class="riddle">
+                <h3>Riddle II</h3>
+                <p>"You measure my life in hours and I serve you by expiring. I'm quick when I'm thin and slow when I'm fat. The wind is my enemy. What am I?"</p>
+            </div>
+            <div class="riddle">
+                <h3>Riddle III</h3>
+                <p>"I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?"</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const gridContainer = document.getElementById('grid');
+        const distractors = ["Empty", "Miss", "Dust", "None", "Void"];
+        const totalBoxes = 46; // Exactly 46 div blocks
+        
+        // Randomly pick one box to be the winner
+        const winningIndex = Math.floor(Math.random() * totalBoxes);
+
+        for (let i = 0; i < totalBoxes; i++) {
+            const box = document.createElement('div');
+            box.classList.add('grid-box');
+            
+            box.addEventListener('click', function() {
+                // If it's already flipped, do nothing
+                if (this.classList.contains('revealed')) return;
+                
+                this.classList.add('revealed');
+                
+                if (i === winningIndex) {
+                    this.classList.add('winner');
+                    this.textContent = "Hello";
+                } else {
+                    // Pick a random distractor word
+                    this.textContent = distractors[Math.floor(Math.random() * distractors.length)];
+                }
+            });
+            
+            gridContainer.appendChild(box);
+        }
+    </script>
+</body>
+</html>
